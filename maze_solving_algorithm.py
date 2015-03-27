@@ -81,6 +81,7 @@ class Cell:
         else:
             self.y = self.number / 7
         self.openlist = []
+        self.ManhattanDistance = 10000
         print self.number, ": ", self.x, " ", self.y, printAdjacentStart([self.N, self.S, self.E, self.W])
 
     #Method for finding the next cell to move to
@@ -187,132 +188,12 @@ class Cell:
                             self.chosen = cell
                             nextCell = self.chosen
                 else:
-                    #if neither are in closed list, chose the one closer to final
-                    if (self.direction == "Southeast" or self.direction == "Southwest"):
-                        #chose one with the highest number
-                        maxNo = 0
-                        maxCell = None
-                        for cell in newlist:
-                            if (cell.number > maxNo):
-                                maxNo = cell.number
-                                maxCell = cell
-                        self.chosen = maxCell
-                        nextCell = maxCell
-                    elif (self.direction == "Northeast" or self.direction == "Northwest"):
-                        #choose the smaller number
-                        minNo = 50
-                        minCell = None
-                        for cell in newlist:
-                            if (cell.number < minNo):
-                                minNo = cell.number
-                                minCell = cell
-                        self.chosen = minCell
-                        nextCell = minCell
-                    elif (self.direction == "east"):
-                        #choose the one on the right
-                        maxNo = 0
-                        maxCell = None
-                        for cell in self.openlist:
-                            if (cell.number == endCell.number):
-                                self.chosen = cell
-                                nextCell = cell
-                            elif (cell.number == self.number + 1):
-                                self.chosen = cell
-                                nextCell = cell
-                            else:
-                                if (cell.number > maxNo):
-                                    maxNo = cell.number
-                                    maxCell = cell
-                        self.chosen = maxCell
-                        nextCell = maxCell
-                    elif (self.direction == "South"):
-                        #choose the one on the right
-                        maxNo = 0
-                        maxCell = None
-                        for cell in self.openlist:
-                            if (cell.number == endCell.number):
-                                self.chosen = cell
-                                nextCell = maxCell
-                            elif (cell.number == self.number + 7):
-                                self.chosen = cell
-                                nextCell = maxCell
-                            else:
-                                if (cell.number > maxNo):
-                                    maxNo = cell.number
-                                    maxCell = cell
-                        self.chosen = maxCell
-                        nextCell = maxCell
-                    elif (self.direction == "west"):
-                        #choose the one on the right
-                        minNo = 50
-                        minCell = None
-                        for cell in self.openlist:
-                            if (cell.number == endCell.number):
-                                self.chosen = cell
-                                nextCell = cell
-                            elif (cell.number == self.number - 1):
-                                self.chosen = cell
-                                nextCell = cell
-                            else:
-                                if (cell.number < minNo):
-                                    minNo = cell.number
-                                    minCell = cell
-                        self.chosen = minNo
-                        nextCell = minCell
-                    elif (self.direction == "North"):
-                        minNo = 50
-                        minCell = None
-                        for cell in self.openlist:
-                            if (cell.number == endCell.number):
-                                self.chosen = cell
-                                nextCell = cell
-                            elif (cell.number == self.number - 7):
-                                self.chosen = cell
-                                nextCell = cell
-                            else:
-                                if (cell.number < minNo):
-                                    minNo = cell.number
-                                    minCell = cell
-                        self.chosen = minNo
-                        nextCell = minCell
-
-
-
-                    '''
-                    if (self.direction == "Southeast" or self.direction == "Southwest"):
-                        #chose highest number
-                        maxNo = 0
-                        maxCell = None
-                        while (nextCell == None):
-                            for cell in newlist:
-                                if (cell.number > maxNo):
-                                    maxNo = cell.number
-                                    maxCell = cell
-                            if (self.direction == "Southeast" and maxCell.number != self.number - 1):
-                                self.chosen = maxCell
-                                nextCell = maxCell
-                            elif (self.direction == "Southwest" and maxCell.number != self.number + 1):
-                                self.chosen = maxCell
-                                nextCell = maxeCell
-                            else:
-                                newlist.remove(maxCell)
-                    elif (self.direction == "Northeast" or self.direction == "Northwest"):
-                        minNo = 50
-                        minCell = None
-                        while (nextCell == None):
-                            for cell in newlist:
-                                if (cell.number < minNo):
-                                    minNo = cell.number
-                                    minCell = cell
-                            if (self.direction == "Southeast" and maxCell.number != self.number - 1):
-                                self.chosen = minCell
-                                nextCell = minCell
-                            elif (self.direction == "Southwest" and maxCell.number != self.number + 1):
-                                self.chosen = minCell
-                                nextCell = minCell
-                            else:
-                                newlist.remove(minCell)
-                    '''
+                    #If neither are in closed list, chose the one closer to the final square
+                    for cell in self.openlist:
+                        #calculate Manhattan Distance for each cell in self.openlist
+                        cell.ManhattanDistance = abs(cell.x-self.x)+abs(cell.y-self.y)+abs(endCell.x-cell.x)+abs(endCell.y-cell.y)
+                    #find minimum Manhattan Distance
+                    nextCell = min(self.openlist, key=lambda cell: cell.ManhattanDistance)
 
         print "AC: ", printAdjacent(self.adjacentCells)
         print "Open List: ", printClosedList(self.openlist)
@@ -382,76 +263,6 @@ while (currentCell != endCell):
     prevCell = tempCell
     print str(currentCell.number)
     closedlist.append(currentCell)
-
-
-'''
-prevCell = currentCell
-currentCell = currentCell.nextCell()
-print str(currentCell.number)
-closedlist.append(currentCell)
-print "Closed list: ",printClosedList(closedlist)
-print closedlist
-
-prevCell = currentCell
-currentCell = currentCell.nextCell()
-print str(currentCell.number)
-closedlist.append(currentCell)
-print "Closed list: ",printClosedList(closedlist)
-
-prevCell = currentCell
-currentCell = currentCell.nextCell()
-print str(currentCell.number)
-closedlist.append(currentCell)
-print "Closed list: ",printClosedList(closedlist)
-
-prevCell = currentCell
-currentCell = currentCell.nextCell()
-print str(currentCell.number)
-closedlist.append(currentCell)
-print "Closed list: ",printClosedList(closedlist)
-
-prevCell = currentCell
-currentCell = currentCell.nextCell()
-print str(currentCell.number)
-closedlist.append(currentCell)
-print "Closed list: ",printClosedList(closedlist)
-
-prevCell = currentCell
-currentCell = currentCell.nextCell()
-print str(currentCell.number)
-closedlist.append(currentCell)
-print "Closed list: ",printClosedList(closedlist)
-
-prevCell = currentCell
-currentCell = currentCell.nextCell()
-print str(currentCell.number)
-closedlist.append(currentCell)
-print "Closed list: ",printClosedList(closedlist)
-
-prevCell = currentCell
-currentCell = currentCell.nextCell()
-print str(currentCell.number)
-closedlist.append(currentCell)
-print "Closed list: ",printClosedList(closedlist)
-
-prevCell = currentCell
-currentCell = currentCell.nextCell()
-print str(currentCell.number)
-closedlist.append(currentCell)
-print "Closed list: ",printClosedList(closedlist)
-
-prevCell = currentCell
-currentCell = currentCell.nextCell()
-print str(currentCell.number)
-closedlist.append(currentCell)
-print "Closed list: ",printClosedList(closedlist)
-
-prevCell = currentCell
-currentCell = currentCell.nextCell()
-print str(currentCell.number)
-closedlist.append(currentCell)
-print "Closed list: ",printClosedList(closedlist)
-'''
 
 print "Final square: ", str(currentCell.number), " Number of movements: ", str(count)
 
